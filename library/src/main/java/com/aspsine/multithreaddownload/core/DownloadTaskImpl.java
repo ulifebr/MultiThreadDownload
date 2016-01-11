@@ -158,9 +158,19 @@ public abstract class DownloadTaskImpl implements DownloadTask {
     }
 
     private void setHttpHeader(Map<String, String> headers, URLConnection connection) {
-        if (headers != null) {
-            for (String key : headers.keySet()) {
-                connection.setRequestProperty(key, headers.get(key));
+        if (mDownloadInfo.getHeaders() != null) {
+            if(headers != null) {
+                mDownloadInfo.getHeaders().putAll(headers);
+            }
+
+            for (String key : mDownloadInfo.getHeaders().keySet()) {
+                connection.setRequestProperty(key, mDownloadInfo.getHeaders().get(key));
+            }
+        }else{
+            if(headers != null){
+                for (String key : headers.keySet()) {
+                    connection.setRequestProperty(key, headers.get(key));
+                }
             }
         }
     }

@@ -56,7 +56,7 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
     }
 
     private void init() {
-        mDownloadInfo = new DownloadInfo(mRequest.getTitle().toString(), mRequest.getUri(), mRequest.getFolder());
+        mDownloadInfo = new DownloadInfo(mRequest.getTitle().toString(), mRequest.getUri(), mRequest.getFolder(), mRequest.getHeaders());
         mDownloadTasks = new LinkedList<>();
     }
 
@@ -182,7 +182,7 @@ public class DownloaderImpl implements Downloader, ConnectTask.OnConnectListener
     }
 
     private void connect() {
-        mConnectTask = new ConnectTaskImpl(mRequest.getUri(), this);
+        mConnectTask = new ConnectTaskImpl(mRequest.getUri(), mRequest.getHeaders(), this);
         mExecutor.execute(mConnectTask);
     }
 

@@ -1,7 +1,10 @@
 package com.aspsine.multithreaddownload;
 
 
+import android.support.annotation.Nullable;
+
 import java.io.File;
+import java.util.Map;
 
 /**
  * Created by Aspsine on 2015/4/20.
@@ -17,15 +20,18 @@ public class DownloadRequest {
 
     private boolean mScannable;
 
+    private Map<String, String> headers;
+
     private DownloadRequest() {
     }
 
-    private DownloadRequest(String uri, File folder, CharSequence title, CharSequence description, boolean scannable) {
-        this.mUri = uri;
-        this.mFolder = folder;
-        this.mTitle = title;
-        this.mDescription = description;
-        this.mScannable = scannable;
+    public DownloadRequest(String mUri, File mFolder, CharSequence mTitle, CharSequence mDescription, boolean mScannable,@Nullable Map<String, String> headers) {
+        this.mUri = mUri;
+        this.mFolder = mFolder;
+        this.mTitle = mTitle;
+        this.mDescription = mDescription;
+        this.mScannable = mScannable;
+        this.headers = headers;
     }
 
     public String getUri() {
@@ -48,6 +54,10 @@ public class DownloadRequest {
         return mScannable;
     }
 
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
     public static class Builder {
 
         private String mUri;
@@ -59,6 +69,8 @@ public class DownloadRequest {
         private CharSequence mDescription;
 
         private boolean mScannable;
+
+        private Map<String, String> headers;
 
         public Builder() {
         }
@@ -88,8 +100,13 @@ public class DownloadRequest {
             return this;
         }
 
+        public Builder setHeaders (Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
         public DownloadRequest build() {
-            DownloadRequest request = new DownloadRequest(mUri, mFolder, mTitle, mDescription, mScannable);
+            DownloadRequest request = new DownloadRequest(mUri, mFolder, mTitle, mDescription, mScannable, headers);
             return request;
         }
     }

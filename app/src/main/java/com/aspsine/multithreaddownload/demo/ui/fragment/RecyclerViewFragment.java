@@ -24,7 +24,9 @@ import com.aspsine.multithreaddownload.demo.util.Utils;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -88,6 +90,8 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
      */
     private final File mDownloadDir = new File(Environment.getExternalStorageDirectory(), "Download");
 
+    private Map<String, String> headers;
+
     @Override
     public void onItemClick(View v, int position, AppInfo appInfo) {
         if (appInfo.getStatus() == AppInfo.STATUS_DOWNLOADING || appInfo.getStatus() == AppInfo.STATUS_CONNECTING) {
@@ -102,10 +106,14 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
     }
 
     private void download(final int position, String tag, final AppInfo appInfo) {
+        headers = new HashMap<>(1);
+        headers.put("QB-Token","76e88913e9b5f7e496b7b9e654474695485ac51d");
+
         final DownloadRequest request = new DownloadRequest.Builder()
-                .setTitle(appInfo.getName() + ".apk")
+                .setTitle(appInfo.getName()+ ".png")
                 .setUri(appInfo.getUrl())
                 .setFolder(mDownloadDir)
+                .setHeaders(headers)
                 .build();
 
         DownloadManager.getInstance().download(request, tag, new DownloadCallback(position, appInfo));

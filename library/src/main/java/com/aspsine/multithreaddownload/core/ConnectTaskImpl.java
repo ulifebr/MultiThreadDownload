@@ -1,6 +1,7 @@
 package com.aspsine.multithreaddownload.core;
 
 import android.os.Process;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.aspsine.multithreaddownload.Constants;
@@ -13,6 +14,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Aspsine on 2015/7/20.
@@ -25,9 +29,12 @@ public class ConnectTaskImpl implements ConnectTask {
 
     private volatile long mStartTime;
 
-    public ConnectTaskImpl(String uri, OnConnectListener listener) {
+    private volatile Map<String, String> headers;
+
+    public ConnectTaskImpl(String uri, Map<String, String> headers, OnConnectListener listener) {
         this.mUri = uri;
         this.mOnConnectListener = listener;
+        this.headers = headers;
     }
 
     public void cancel() {
@@ -81,6 +88,8 @@ public class ConnectTaskImpl implements ConnectTask {
             httpConnection.setReadTimeout(Constants.HTTP.READ_TIME_OUT);
             httpConnection.setRequestMethod(Constants.HTTP.GET);
             httpConnection.setRequestProperty("Range", "bytes=" + 0 + "-");
+            setHttpHeader(headers, httpConnection);
+
             final int responseCode = httpConnection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 parseResponse(httpConnection, false);
@@ -96,6 +105,15 @@ public class ConnectTaskImpl implements ConnectTask {
         } finally {
             if (httpConnection != null) {
                 httpConnection.disconnect();
+            }
+        }
+    }
+
+
+    private void setHttpHeader(Map<String, String> headers, URLConnection connection) {
+        if (headers != null) {
+            for (String key : headers.keySet()) {
+                connection.setRequestProperty(key, headers.get(key));
             }
         }
     }
